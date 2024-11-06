@@ -73,13 +73,8 @@ int main(int argc, char* argv[]) {
 
     fprintf(stderr,"[%08d %p] ", (int)i, region);
     if (thp_count.pages_available) {
-      total_num_2m_pages += thp_count.pages_set / (PAGE_SIZE_2M / PAGE_SIZE_4K);
-      total_num_4k_pages += thp_count.pages_total - thp_count.pages_set;
-      
-      fprintf(stderr, "Source pages allocated with transparent hugepages: %4.1f%% (%lu total pages, %4.1f%% flagged)\n",
-             100.0 * thp_count.pages_set / thp_count.pages_total,
-             thp_count.pages_total,
-             100.0 * thp_count.pages_available / thp_count.pages_total);
+      total_num_2m_pages += thp_count.pages_set ;
+      total_num_4k_pages += thp_count.pages_total - thp_count.pages_set;      
     } else {
       fprintf(stderr, "Couldn't determine hugepage info (you are probably not running as root)\n");
     }
@@ -94,7 +89,8 @@ int main(int argc, char* argv[]) {
     
     free_info_array(pinfo);
   }
-
+  total_num_2m_pages /= PAGE_SIZE_2M / PAGE_SIZE_4K;
+  
 
   fprintf(stderr, "================================= summary =======================================\n");
   size_t total_num_bytes_4k_pages = total_num_4k_pages * PAGE_SIZE_4K;
